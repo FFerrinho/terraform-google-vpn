@@ -1,4 +1,4 @@
-resource "google_compute_vpn_getway" "main" {
+resource "google_compute_vpn_gateway" "main" {
   count       = var.vpn_gateway_name
   name        = var.vpn_gateway_name
   network     = var.network
@@ -56,7 +56,8 @@ resource "google_compute_router" "main" {
 }
 
 resource "google_compute_vpn_tunnel" "main" {
-  name                            = vpn_tunnel_name
+  count                           = var.vpn_tunnel_name
+  name                            = var.vpn_tunnel_name
   shared_secret                   = var.shared_secret
   description                     = var.vpn_tunnel_description
   target_vpn_gateway              = var.vpn_gateway_name != null ? google_compute_vpn_gateway.main[0].self_link : null
