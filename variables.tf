@@ -33,13 +33,13 @@ variable "ha_vpn_gateway_name" {
   default     = null
 }
 
-variable "vpn_description" {
+variable "vpn_gateway_description" {
   description = "A description for the VPN Gateway."
   type        = string
   default     = null
 }
 
-variable "stack_type" {
+variable "ha_vpn_stack_type" {
   description = "The stack type for the VPN Gateway."
   type        = string
   default     = "IPV4_ONLY"
@@ -61,11 +61,48 @@ variable "gateway_ip_version" {
   }
 }
 
-variable "vpn_interfaces" {
+variable "ha_vpn_interfaces" {
   description = "A list of VPN interfaces for the VPN Gateway."
   type = list(object({
     id                      = optional(string)
     interconnect_attachment = optional(string)
+  }))
+  default = null
+}
+
+variable "external_vpn_gateway_name" {
+  description = "The name for the External VPN Gateway."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.external_vpn_gateway_name == null || can(regex("^[a-z][-a-z0-9]*[a-z0-9]$", var.external_vpn_gateway_name)) && length(var.external_vpn_gateway_name) <= 63
+    error_message = "external_vpn_gateway_name must be between 1 and 63 characters, starting with a letter, ending with a letter or number, and only containing lowercase letters, numbers, and hyphens"
+  }
+}
+
+variable "external_vpn_gateway_labels" {
+  description = "A map of labels for the External VPN Gateway."
+  type        = map(string)
+  default     = null
+}
+
+variable "external_vpn_gateway_redundancy_type" {
+  description = "The redundancy type for the External VPN Gateway."
+  type        = string
+  default     = "SINGLE_IP_INTERNALLY_REDUNDANT"
+
+  validation {
+    condition     = contains(["FOUR_IPS_REDUNDANCY", "SINGLE_IP_INTERNALLY_REDUNDANT", "TWO_IPS_REDUNDANCY"], var.external_vpn_gateway_redundancy_type)
+    error_message = "external_vpn_gateway_redundancy_type must be one of: FOUR_IPS_REDUNDANCY, SINGLE_IP_INTERNALLY_REDUNDANT, TWO_IPS_REDUNDANCY"
+  }
+}
+
+variable "external_vpn_gateway_interface" {
+  description = "A list of interface for the External VPN Gateway."
+  type = list(object({
+    id         = optional(string)
+    ip_address = optional(string)
   }))
   default = null
 }
@@ -180,6 +217,11 @@ variable "bgp" {
     }))
   }))
   default = null
+
+  validation {
+    condition     = var.bgp == null || alltrue([for b in var.bgp : (b.asn >= 64512 && b.asn <= 65534) || (b.asn >= 4200000000 && b.asn <= 4294967294)])
+    error_message = "ASN must be either a 16-bit private ASN (64512-65534) or a 32-bit private ASN (4200000000-4294967294) per RFC6996"
+  }
 }
 
 variable "router_interface_name" {

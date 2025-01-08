@@ -1,32 +1,3 @@
-resource "google_compute_vpn_gateway" "main" {
-  count       = var.vpn_gateway_name
-  name        = var.vpn_gateway_name
-  network     = var.network
-  description = var.vpn_description
-  region      = var.region
-  project     = var.project
-}
-
-resource "google_compute_ha_vpn_gateway" "main" {
-  count              = var.ha_vpn_gateway_name
-  name               = var.ha_vpn_gateway_name
-  network            = var.network
-  description        = var.vpn_description
-  stack_type         = var.stack_type
-  gateway_ip_version = var.gateway_ip_version
-  region             = var.region
-  project            = var.project
-
-  dynamic "vpn_interfaces" {
-    for_each = var.vpn_interfaces
-    content {
-      id                      = vpn_interfaces.value.id
-      interconnect_attachment = vpn_interfaces.value.interconnect_attachment
-    }
-
-  }
-}
-
 resource "google_compute_router" "main" {
   count       = var.router_name
   name        = var.router_name
@@ -53,27 +24,6 @@ resource "google_compute_router" "main" {
       }
     }
   }
-}
-
-resource "google_compute_vpn_tunnel" "main" {
-  count                           = var.vpn_tunnel_name
-  name                            = var.vpn_tunnel_name
-  shared_secret                   = var.shared_secret
-  description                     = var.vpn_tunnel_description
-  target_vpn_gateway              = var.vpn_gateway_name != null ? google_compute_vpn_gateway.main[0].self_link : null
-  vpn_gateway                     = var.ha_vpn_gateway_name != null ? google_compute_ha_vpn_gateway.main[0].self_link : null
-  vpn_gateway_interface           = var.vpn_gateway_interface
-  peer_external_gateway           = var.peer_external_gateway
-  peer_external_gateway_interface = var.peer_external_gateway_interface
-  peer_gcp_gateway                = var.peer_gcp_gateway
-  router                          = var.router_name != null ? google_compute_router.main[0].self_link : var.router_self_link
-  peer_ip                         = var.peer_ip
-  ike_version                     = var.ike_version
-  local_traffic_selector          = var.local_traffic_selector
-  remote_traffic_selector         = var.remote_traffic_selector
-  labels                          = var.vpn_tunnel_labels
-  region                          = var.region
-  project                         = var.project
 }
 
 resource "google_compute_router_interface" "main" {
