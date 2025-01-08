@@ -56,22 +56,22 @@ resource "google_compute_external_vpn_gateway" "main" {
 }
 
 resource "google_compute_vpn_tunnel" "main" {
-  count                           = var.vpn_tunnel_name
-  name                            = var.vpn_tunnel_name
-  shared_secret                   = var.shared_secret
-  description                     = var.vpn_tunnel_description
-  target_vpn_gateway              = var.vpn_gateway_name != null ? google_compute_vpn_gateway.main[0].self_link : null
-  vpn_gateway                     = var.ha_vpn_gateway_name != null ? google_compute_ha_vpn_gateway.main[0].self_link : null
-  vpn_gateway_interface           = var.vpn_gateway_interface
-  peer_external_gateway           = var.peer_external_gateway
-  peer_external_gateway_interface = var.peer_external_gateway_interface
-  peer_gcp_gateway                = var.peer_gcp_gateway
-  router                          = var.router_name != null ? google_compute_router.main[0].self_link : var.router_self_link
-  peer_ip                         = var.peer_ip
-  ike_version                     = var.ike_version
-  local_traffic_selector          = var.local_traffic_selector
-  remote_traffic_selector         = var.remote_traffic_selector
-  labels                          = var.vpn_tunnel_labels
+  for_each                        = var.vpn_tunnel
+  name                            = each.value.name
+  shared_secret                   = each.value.shared_secret
+  description                     = each.value.description
+  target_vpn_gateway              = each.value.target_vpn_gateway
+  vpn_gateway                     = each.value.vpn_gateway
+  vpn_gateway_interface           = each.value.vpn_gateway_interface
+  peer_external_gateway           = each.value.peer_external_gateway
+  peer_external_gateway_interface = each.value.peer_external_gateway_interface
+  peer_gcp_gateway                = each.value.peer_gcp_gateway
+  router                          = each.value.router
+  peer_ip                         = each.value.peer_ip
+  ike_version                     = each.value.ike_version
+  local_traffic_selector          = each.value.local_traffic_selector
+  remote_traffic_selector         = each.value.remote_traffic_selector
+  labels                          = each.value.labels
   region                          = var.region
   project                         = var.project
 }
