@@ -53,7 +53,7 @@ variable "ha_vpn_stack_type" {
 variable "gateway_ip_version" {
   description = "The IP version for the VPN Gateway."
   type        = string
-  default     = "IPV4_ONLY"
+  default     = "IPV4"
 
   validation {
     condition     = contains(["IPV4", "IPV6"], var.gateway_ip_version)
@@ -67,7 +67,7 @@ variable "ha_vpn_interfaces" {
     id                      = optional(string)
     interconnect_attachment = optional(string)
   }))
-  default = null
+  default = []
 }
 
 variable "external_vpn_gateway_name" {
@@ -76,7 +76,7 @@ variable "external_vpn_gateway_name" {
   default     = null
 
   validation {
-    condition     = var.external_vpn_gateway_name == null || can(regex("^[a-z][-a-z0-9]*[a-z0-9]$", var.external_vpn_gateway_name)) && length(var.external_vpn_gateway_name) <= 63
+    condition     = var.external_vpn_gateway_name == null ? true : (can(regex("^[a-z][-a-z0-9]*[a-z0-9]$", var.external_vpn_gateway_name)) && length(var.external_vpn_gateway_name) <= 63)
     error_message = "external_vpn_gateway_name must be between 1 and 63 characters, starting with a letter, ending with a letter or number, and only containing lowercase letters, numbers, and hyphens"
   }
 }

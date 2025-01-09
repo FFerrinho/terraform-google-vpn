@@ -1,5 +1,5 @@
 resource "google_compute_vpn_gateway" "main" {
-  count       = var.vpn_gateway_name
+  count       = var.vpn_gateway_name != null ? 1 : 0
   name        = var.vpn_gateway_name
   network     = var.network
   description = var.vpn_gateway_description
@@ -8,7 +8,7 @@ resource "google_compute_vpn_gateway" "main" {
 }
 
 resource "google_compute_ha_vpn_gateway" "main" {
-  count              = var.ha_vpn_gateway_name
+  count              = var.ha_vpn_gateway_name != null ? 1 : 0
   name               = var.ha_vpn_gateway_name
   network            = var.network
   description        = var.vpn_gateway_description
@@ -18,7 +18,7 @@ resource "google_compute_ha_vpn_gateway" "main" {
   project            = var.project
 
   dynamic "vpn_interfaces" {
-    for_each = var.ha_vpn_interfaces
+    for_each = var.ha_vpn_interfaces != null ? var.ha_vpn_interfaces : []
     content {
       id                      = vpn_interfaces.value.id
       interconnect_attachment = vpn_interfaces.value.interconnect_attachment
@@ -28,7 +28,7 @@ resource "google_compute_ha_vpn_gateway" "main" {
 }
 
 resource "google_compute_external_vpn_gateway" "main" {
-  count           = var.external_vpn_gateway_name
+  count           = var.external_vpn_gateway_name != null ? 1 : 0
   name            = var.external_vpn_gateway_name
   description     = var.vpn_gateway_description
   labels          = var.external_vpn_gateway_labels
