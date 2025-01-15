@@ -57,11 +57,17 @@ resource "google_compute_external_vpn_gateway" "main" {
 
 resource "google_compute_vpn_tunnel" "main" {
   for_each                        = var.vpn_tunnel
-  name                            = each.value.name
+  name                            = each.key
   shared_secret                   = each.value.shared_secret
   description                     = each.value.description
   target_vpn_gateway              = each.value.target_vpn_gateway
-  vpn_gateway                     = each.value.vpn_gateway
+  vpn_gateway = each.value.vpn_gateway != null ? each.value.vpn_gateway : (
+  length(google_compute_vpn_gateway.main) > 0 ? google_compute_vpn_gateway.main[0].id : (
+    length(google_compute_ha_vpn_gateway.main) > 0 ? google_compute_ha_vpn_gateway.main[0].id : (
+      length(google_compute_external_vpn_gateway.main) > 0 ? google_compute_external_vpn_gateway.main[0].id : null
+    )
+  )
+)
   vpn_gateway_interface           = each.value.vpn_gateway_interface
   peer_external_gateway           = each.value.peer_external_gateway
   peer_external_gateway_interface = each.value.peer_external_gateway_interface

@@ -110,7 +110,6 @@ variable "external_vpn_gateway_interface" {
 variable "vpn_tunnel" {
   description = "The VPN Tunnel(s) for the VPN Gateway."
   type = map(object({
-    name                            = optional(string)
     shared_secret                   = optional(string)
     description                     = optional(string)
     target_vpn_gateway              = optional(string)

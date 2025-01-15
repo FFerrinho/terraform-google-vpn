@@ -41,8 +41,13 @@ No modules.
 | <a name="input_remote_router_self_link"></a> [remote\_router\_self\_link](#input\_remote\_router\_self\_link) | The self link for the remote router. | `string` | `null` | no |
 | <a name="input_vpn_gateway_description"></a> [vpn\_gateway\_description](#input\_vpn\_gateway\_description) | A description for the VPN Gateway. | `string` | `null` | no |
 | <a name="input_vpn_gateway_name"></a> [vpn\_gateway\_name](#input\_vpn\_gateway\_name) | The name for the VPN Gateway. | `string` | `null` | no |
-| <a name="input_vpn_tunnel"></a> [vpn\_tunnel](#input\_vpn\_tunnel) | The VPN Tunnel(s) for the VPN Gateway. | <pre>map(object({<br>    name                            = optional(string)<br>    shared_secret                   = optional(string)<br>    description                     = optional(string)<br>    target_vpn_gateway              = optional(string)<br>    vpn_gateway                     = optional(string)<br>    vpn_gateway_interface           = optional(string)<br>    peer_external_gateway           = optional(string)<br>    peer_external_gateway_interface = optional(string)<br>    peer_gcp_gateway                = optional(string)<br>    router                          = optional(string)<br>    peer_ip                         = optional(string)<br>    ike_version                     = optional(string)<br>    local_traffic_selector          = optional(list(string))<br>    remote_traffic_selector         = optional(list(string))<br>    labels                          = optional(map(string))<br>  }))</pre> | `{}` | no |
+| <a name="input_vpn_tunnel"></a> [vpn\_tunnel](#input\_vpn\_tunnel) | The VPN Tunnel(s) for the VPN Gateway. | <pre>map(object({<br>    shared_secret                   = optional(string)<br>    description                     = optional(string)<br>    target_vpn_gateway              = optional(string)<br>    vpn_gateway                     = optional(string)<br>    vpn_gateway_interface           = optional(string)<br>    peer_external_gateway           = optional(string)<br>    peer_external_gateway_interface = optional(string)<br>    peer_gcp_gateway                = optional(string)<br>    router                          = optional(string)<br>    peer_ip                         = optional(string)<br>    ike_version                     = optional(string)<br>    local_traffic_selector          = optional(list(string))<br>    remote_traffic_selector         = optional(list(string))<br>    labels                          = optional(map(string))<br>  }))</pre> | `{}` | no |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_external_vpn_gateway"></a> [external\_vpn\_gateway](#output\_external\_vpn\_gateway) | The created External VPN Gateway resource |
+| <a name="output_ha_vpn_gateway"></a> [ha\_vpn\_gateway](#output\_ha\_vpn\_gateway) | The created HA VPN Gateway resource |
+| <a name="output_vpn_gateway"></a> [vpn\_gateway](#output\_vpn\_gateway) | The created VPN Gateway resource |
+| <a name="output_vpn_tunnels"></a> [vpn\_tunnels](#output\_vpn\_tunnels) | The created VPN Tunnels |
